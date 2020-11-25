@@ -8,8 +8,6 @@ echo "====================================="
 echo "   = = = = = =        = = = = = =   " 
 echo "====================================="
 echo " "
-#niktoused actually means unused lol
-niktoused=true
 if [ -z "$1" ] 
 then
 	read -p "Enter remote host ip:" ip
@@ -19,20 +17,35 @@ then
 		#nmap -T4 -p $line $ip -A
 	done
 #nikto scans if webports open
-	if [ "$line" = *"80"* ] && [ $niktoused ]
+	if [ $line=="80" ]
 	then
 		echo "Starting nikto scan..."
 		nikto -h "$ip"
-		niktoused=false
+	fi
+#smbclient checks anonymous
+	if [ $line=="139" ]
+	then
+		smbclient -L \\\\$ip\\
+		sleep 10
+		echo -e "Anonymous" 
+		echo -e "Anonymous" 
 	fi
 
-	if [ "$line" = *"443"* ]   && [ $niktoused ]
+	if [ $line=="443" ]
 	then
 		echo "Starting nikto scan..."
-		nikto -h "$ip"
-		niktoused=false
+		nikto -h "https://$ip:443"
+
 	fi
 
+	if [ $line=="445" ]
+	then
+		smbclient -L \\\\$ip\\
+		sleep 10
+		echo -e "Anonymous" 
+		echo -e "Anonymous" 
+	fi	
+	
 else 
 	nmap -T4 -p- "$1" | grep open |  cut -d "/" -f1 | while read -r line ; do
 		echo "Port $line"
@@ -42,15 +55,31 @@ else
 
 	if [ $line=="80" ]
 	then
-		echo "Starting nikto scan..."
+		echo "Starting nikto scan at port 80..."
 		nikto -h "$1"
-		niktoused=false
+
 	fi
 
-	if [ "$line" = "443" ]   && [ $niktoused ]
+	if [ $line=="139" ]
 	then
-		echo "Starting nikto scan..."
-		nikto -h "$1"
-		niktoused=false
+		smbclient -L \\\\$1\\
+		sleep 10
+		echo -e "Anonymous" 
+		echo -e "Anonymous" 
 	fi
+
+	if [ $line=="443" ]
+	then
+		echo "Starting nikto scan at port 443..."
+		nikto -h "$1:443"
+	fi
+
+	if [ $line=="139" ]
+	then
+		smbclient -L \\\\$1\\
+		sleep 10
+		echo -e "Anonymous" 
+		echo -e "Anonymous" 
+	fi
+
 fi
