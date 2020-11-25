@@ -22,13 +22,11 @@ then
 		echo "Starting nikto scan..."
 		nikto -h "$ip"
 	fi
-#smbclient checks anonymous
+#enum4linux for smb checks
 	if [ $line=="139" ]
 	then
-		smbclient -L \\\\$ip\\
-		sleep 10
-		echo -e "Anonymous" 
-		echo -e "Anonymous" 
+		enum4linux "$ip"
+
 	fi
 
 	if [ $line=="443" ]
@@ -40,10 +38,8 @@ then
 
 	if [ $line=="445" ]
 	then
-		smbclient -L \\\\$ip\\
-		sleep 10
-		echo -e "Anonymous" 
-		echo -e "Anonymous" 
+		enum4linux "$ip"
+
 	fi	
 	
 else 
@@ -62,10 +58,8 @@ else
 
 	if [ $line=="139" ]
 	then
-		smbclient -L \\\\$1\\
-		sleep 10
-		echo -e "Anonymous" 
-		echo -e "Anonymous" 
+		enum4linux "$1"
+
 	fi
 
 	if [ $line=="443" ]
@@ -76,10 +70,8 @@ else
 
 	if [ $line=="139" ]
 	then
-		smbclient -L \\\\$1\\
-		sleep 10
-		echo -e "Anonymous" 
-		echo -e "Anonymous" 
+		enum4linux "$1"
+
 	fi
 
 fi
